@@ -1,9 +1,12 @@
 import './Tasks.css';
 import Collapsible from '../Collapsible/Collapsible';
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 // import actions from '../../actions';
 
 function Task() {
+  // get state from redux store with useSelector hook
+  const tasks = useSelector((state) => state.tasks);
   const [isNewTaskOpen, setIsNewTaskOpen] = useState(false);
 
   // Add new task
@@ -81,41 +84,24 @@ function Task() {
 
         <div className="content-body">
           {/* task starts */}
-          <div className="task">
-            <div className="task-body">
-              <div className="task-title">
-                <i className="fa fa-thumb tack"></i>
-                <span className="task-title-text">Bob's appointment</span>
+          {tasks.map((task) => (
+            <div className="task" key={task.id}>
+              <div className="task-body">
+                <div className="task-title">
+                  <i className="fa fa-thumb tack"></i>
+                  <span className="task-title-text">{task.taskTitle}</span>
+                </div>
+                <div className="task-subtitle">
+                  <i className="fa fa-clock"></i>
+                  <span className="task-subtitle-text">{task.taskDataTime}</span>
+                </div>
               </div>
-              <div className="task-subtitle">
-                <i className="fa fa-clock"></i>
-                <span className="task-subtitle-text">Jul 16th 2009</span>
-              </div>
-            </div>
 
-            <div className="task-options">
-              <button className="icon-button">&times;</button>
-            </div>
-          </div>
-          {/* task ends */}
-
-          {/* task starts */}
-          <div className="task">
-            <div className="task-body">
-              <div className="task-title">
-                <i className="fa fa-thumb tack"></i>
-                <span className="task-title-text">Tenzin's appointment</span>
-              </div>
-              <div className="task-subtitle">
-                <i className="fa fa-clock"></i>
-                <span className="task-subtitle-text">Avril 21th 2022</span>
+              <div className="task-options">
+                <button className="icon-button">&times;</button>
               </div>
             </div>
-
-            <div className="task-options">
-              <button className="icon-button">&times;</button>
-            </div>
-          </div>
+          ))}
           {/* task ends */}
         </div>
       </div>
