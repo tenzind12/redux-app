@@ -1,4 +1,4 @@
-import * as actionTypes from '../constants/action-types.Js';
+import * as actionTypes from '../constants/action-types.js';
 
 export const createTask = (newTask) => {
   return {

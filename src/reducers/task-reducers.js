@@ -1,6 +1,8 @@
 import { initialTasks } from '../data/tasks';
 import * as actionTypes from '../constants/action-types';
 
+// console.log(initialTasks);
+
 export const taskReducer = (state = initialTasks, action) => {
   switch (action.type) {
     case actionTypes.CREATE_TASK:
