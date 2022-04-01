@@ -1,22 +1,54 @@
 import './Tasks.css';
 import Collapsible from '../Collapsible/Collapsible';
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
-// import actions from '../../actions';
+import { useSelector, useDispatch } from 'react-redux';
+import actions from '../../actions';
+import { dateFormat } from '../../utils';
 
 function Task() {
-  // get state from redux store with useSelector hook
-  const tasks = useSelector((state) => state.tasks);
+  // local states
+  const [taskTitle, setTaskTitle] = useState('');
+  const [taskDateTime, setTaskDateTime] = useState('');
+  const [search, setSearch] = useState('');
   const [isNewTaskOpen, setIsNewTaskOpen] = useState(false);
 
-  // Add new task
+  // get Global state from redux store with useSelector hook
+  const tasks = useSelector((state) => state.tasks);
+
+  let filteredTasks = tasks.filter(
+    (task) => task.taskTitle.toLowerCase().indexOf(search.toLowerCase()) >= 0
+  );
+
+  console.log(filteredTasks);
+
+  // create dispatch function
+  const dispatch = useDispatch();
+
+  // saveHandler add new task
   const saveHandler = () => {
+    // dispatch
+    dispatch(
+      actions.createTask({
+        id: Math.floor(Math.random() * 10000000),
+        taskTitle: taskTitle,
+        taskDateTime: taskDateTime,
+      })
+    );
+    setTaskTitle('');
+    setTaskDateTime('');
     setIsNewTaskOpen(!isNewTaskOpen);
   };
 
   // cancel new task
   const cancelHandler = () => {
     setIsNewTaskOpen(!isNewTaskOpen);
+  };
+
+  // deleteHandler
+  const deleteHandler = (id) => {
+    if (window.confirm('Are you sure to delete the task?'))
+      // dispatch
+      dispatch(actions.deleteTask(id));
   };
 
   return (
@@ -48,7 +80,14 @@ function Task() {
               <label htmlFor="task-title" className="form-label">
                 Task Title:
               </label>
-              <input type="text" placeholder="Task Title" className="text-box" id="task-title" />
+              <input
+                value={taskTitle}
+                onChange={(e) => setTaskTitle(e.target.value)}
+                type="text"
+                placeholder="Task Title"
+                className="text-box"
+                id="task-title"
+              />
             </div>
 
             <div className="form-group">
@@ -57,6 +96,8 @@ function Task() {
               </label>
               <div className="form-input">
                 <input
+                  value={taskDateTime}
+                  onChange={(e) => setTaskDateTime(e.target.value)}
                   type="datetime-local"
                   placeholder="Task Date and Time"
                   className="text-box"
@@ -78,13 +119,18 @@ function Task() {
         </Collapsible>
 
         <div className="search-box">
-          <input type="search" placeholder="Search" />
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            type="search"
+            placeholder="Search"
+          />
           <i className="fa fa-search"></i>
         </div>
 
         <div className="content-body">
           {/* task starts */}
-          {tasks.map((task) => (
+          {filteredTasks.map((task) => (
             <div className="task" key={task.id}>
               <div className="task-body">
                 <div className="task-title">
@@ -93,12 +139,14 @@ function Task() {
                 </div>
                 <div className="task-subtitle">
                   <i className="fa fa-clock"></i>
-                  <span className="task-subtitle-text">{task.taskDataTime}</span>
+                  <span className="task-subtitle-text">{dateFormat(task.taskDateTime)}</span>
                 </div>
               </div>
 
               <div className="task-options">
-                <button className="icon-button">&times;</button>
+                <button className="icon-button" onClick={() => deleteHandler(task.id)}>
+                  &times;
+                </button>
               </div>
             </div>
           ))}
