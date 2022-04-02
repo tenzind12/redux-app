@@ -6,3 +6,8 @@
 4. `reducer` a function which returns updated state according to `actions.type`
    > updated state is sent to `STORE`
 5. `STORE` will sent the state to `React Component`
+
+##### Redux-Thunk
+
+1. `useEffect` in `Tasks.jsx` calls `fetchTask()`
+2. received by `redux-thunk` which enables us to use `async` operations

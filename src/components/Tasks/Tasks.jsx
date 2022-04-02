@@ -1,6 +1,6 @@
 import './Tasks.css';
 import Collapsible from '../Collapsible/Collapsible';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import actions from '../../actions';
 import { dateFormat } from '../../utils';
@@ -12,17 +12,21 @@ function Task() {
   const [search, setSearch] = useState('');
   const [isNewTaskOpen, setIsNewTaskOpen] = useState(false);
 
+  // create dispatch function
+  const dispatch = useDispatch();
+
+  // run on first render
+  useEffect(() => {
+    dispatch(actions.fetchTasks());
+  }, [dispatch]);
+
   // get Global state from redux store with useSelector hook
   const tasks = useSelector((state) => state.tasks);
 
+  // filtered with search box
   let filteredTasks = tasks.filter(
     (task) => task.taskTitle.toLowerCase().indexOf(search.toLowerCase()) >= 0
   );
-
-  console.log(filteredTasks);
-
-  // create dispatch function
-  const dispatch = useDispatch();
 
   // saveHandler add new task
   const saveHandler = () => {
