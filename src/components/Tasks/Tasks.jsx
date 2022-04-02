@@ -23,10 +23,15 @@ function Task() {
   // get Global state from redux store with useSelector hook
   const tasks = useSelector((state) => state.tasks);
 
+  console.log(tasks);
+
   // filtered with search box
-  let filteredTasks = tasks.filter(
-    (task) => task.taskTitle.toLowerCase().indexOf(search.toLowerCase()) >= 0
-  );
+  let filteredTasks = [];
+  if (tasks && tasks.data.length) {
+    filteredTasks = tasks.data.filter(
+      (task) => task.taskTitle.toLowerCase().indexOf(search.toLowerCase()) >= 0
+    );
+  }
 
   // saveHandler add new task
   const saveHandler = () => {
@@ -60,7 +65,11 @@ function Task() {
       <div className="container">
         <div className="app-title-container">
           <div className="app-title">
-            <h1>Tasks</h1>
+            <h1>
+              Tasks
+              {tasks.loading && <i className="fa fa-spinner fa-spin"></i>}
+            </h1>
+            {tasks.error && <h2>{tasks.error.message}</h2>}
           </div>
 
           <div className="create-button-container">
