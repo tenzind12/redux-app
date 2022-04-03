@@ -2,6 +2,8 @@ import * as actionTypes from '../constants/action-types';
 /* These functions are used by dispatch in Tasks.jsx to sent to STORE 
    which will be received by the REDUCER
 */
+
+// F E T C H   T A S K   F R O M   D B
 export const fetchTasks = () => {
   return async (dispatch) => {
     // first: set data=[], loading=true, error='' (executed by reducer)
@@ -20,10 +22,37 @@ export const fetchTasks = () => {
   };
 };
 
+// C R E A T E   N E W   T A S K
 export const createTask = (newTask) => {
-  return { type: actionTypes.CREATE_TASK, payload: newTask };
+  return async (dispatch) => {
+    dispatch({ type: actionTypes.CREATE_TASK_REQUEST });
+
+    try {
+      const response = await fetch('http://localhost:7000/tasks', {
+        method: 'POST',
+        body: JSON.stringify(newTask),
+        headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+      });
+      const data = await response.json();
+      dispatch({ type: actionTypes.CREATE_TASK_SUCCESS, payload: data });
+    } catch (error) {
+      dispatch({ type: actionTypes.CREATE_TASK_ERROR, payload: error });
+    }
+
+    // return { type: actionTypes.CREATE_TASK_ERROR, payload: newTask };
+  };
 };
 
+// D E L E T E   T A S K
 export const deleteTask = (taskId) => {
-  return { type: actionTypes.DELETE_TASK, payload: taskId };
+  return async (dispatch) => {
+    dispatch({ type: actionTypes.DELETE_TASK_REQUEST });
+
+    try {
+      await fetch(`http://localhost:7000/tasks/${taskId}`, { method: 'DELETE' });
+      dispatch({ type: actionTypes.DELETE_TASK_SUCCESS, payload: taskId });
+    } catch (error) {
+      dispatch({ type: actionTypes.DELETE_TASK_ERROR, payload: error });
+    }
+  };
 };

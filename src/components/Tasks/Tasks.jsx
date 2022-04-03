@@ -27,7 +27,7 @@ function Task() {
 
   // filtered with search box
   let filteredTasks = [];
-  if (tasks && tasks.data.length) {
+  if (tasks && tasks.data.length > 0) {
     filteredTasks = tasks.data.filter(
       (task) => task.taskTitle.toLowerCase().indexOf(search.toLowerCase()) >= 0
     );
